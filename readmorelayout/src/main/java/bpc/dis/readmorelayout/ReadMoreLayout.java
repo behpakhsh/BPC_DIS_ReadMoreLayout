@@ -225,7 +225,7 @@ public class ReadMoreLayout extends LinearLayout implements View.OnClickListener
             ivExpandOrShrink.setImageDrawable(drawableExpand);
             tvState.setText(textExpand);
         } else {
-            ivExpandOrShrink.setBackgroundDrawable(drawableShrink);
+            ivExpandOrShrink.setImageDrawable(drawableShrink);
             tvState.setText(textShrink);
         }
     }
@@ -234,13 +234,13 @@ public class ReadMoreLayout extends LinearLayout implements View.OnClickListener
         if (endIndex < textLines) {
             isShrink = true;
             rlToggleLayout.setVisibility(View.VISIBLE);
-            ivExpandOrShrink.setBackgroundDrawable(drawableExpand);
+            ivExpandOrShrink.setImageDrawable(drawableExpand);
             textView.setOnClickListener(this);
             tvState.setText(textExpand);
         } else {
             isShrink = false;
             rlToggleLayout.setVisibility(View.GONE);
-            ivExpandOrShrink.setBackgroundDrawable(drawableShrink);
+            ivExpandOrShrink.setImageDrawable(drawableShrink);
             textView.setOnClickListener(null);
             tvState.setText(textShrink);
         }
