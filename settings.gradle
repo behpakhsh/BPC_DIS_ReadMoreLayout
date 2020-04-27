@@ -1,0 +1,3 @@
+rootProject.name='ReadMoreLayout'
+include ':app'
+include ':readmorelayout'

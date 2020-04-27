@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <declare-styleable name="ReadMoreLayout">
+        <attr name="rmlExpandLines" format="integer" />
+        <attr name="rmlShrinkBitmap" format="reference" />
+        <attr name="rmlExpandBitmap" format="reference" />
+        <attr name="rmlTextStateColor" format="color" />
+        <attr name="rmlTextShrink" format="string" />
+        <attr name="rmlTextExpand" format="string" />
+    </declare-styleable>
+</resources>

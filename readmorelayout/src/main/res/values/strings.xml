@@ -1,0 +1,7 @@
+<resources>
+    <string name="app_name">ReadMoreLayout</string>
+    <string name="all">all</string>
+
+    <string name="expand">expand</string>
+    <string name="shrink">shrink</string>
+</resources>
