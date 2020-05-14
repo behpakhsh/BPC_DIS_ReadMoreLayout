@@ -93,6 +93,15 @@ public class ReadMoreLayout extends LinearLayout implements View.OnClickListener
     }
 
     @Override
+    protected void onDetachedFromWindow() {
+        super.onDetachedFromWindow();
+        mOnExpandListener = null;
+        if (handler != null) {
+            handler.removeCallbacks(null);
+        }
+    }
+
+    @Override
     protected void onFinishInflate() {
         super.onFinishInflate();
         View textView = getChildAt(0);
@@ -111,6 +120,7 @@ public class ReadMoreLayout extends LinearLayout implements View.OnClickListener
     @Override
     public void onViewRemoved(View child) {
         super.onViewRemoved(child);
+        mOnExpandListener = null;
         if (handler != null) {
             handler.removeCallbacks(null);
         }
