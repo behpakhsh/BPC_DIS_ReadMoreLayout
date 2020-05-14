@@ -19,7 +19,7 @@ import android.widget.TextView;
 
 import androidx.core.content.ContextCompat;
 
-public class ReadMoreLayout extends LinearLayout implements View.OnClickListener {
+public class ReadMoreLayout extends LinearLayout {
 
     private final int WHAT = 2;
     private final int WHAT_ANIMATION_END = 3;
@@ -95,7 +95,26 @@ public class ReadMoreLayout extends LinearLayout implements View.OnClickListener
     @Override
     protected void onDetachedFromWindow() {
         super.onDetachedFromWindow();
+        textView.setOnClickListener(null);
+        textView.setOnClickListener(null);
+        rlToggleLayout.setOnClickListener(null);
+        textView.addTextChangedListener(null);
         mOnExpandListener = null;
+        onPreDrawListener = null;
+        if (handler != null) {
+            handler.removeCallbacks(null);
+        }
+    }
+
+    @Override
+    public void onViewRemoved(View child) {
+        super.onViewRemoved(child);
+        textView.setOnClickListener(null);
+        textView.setOnClickListener(null);
+        rlToggleLayout.setOnClickListener(null);
+        textView.addTextChangedListener(null);
+        mOnExpandListener = null;
+        onPreDrawListener = null;
         if (handler != null) {
             handler.removeCallbacks(null);
         }
@@ -115,22 +134,6 @@ public class ReadMoreLayout extends LinearLayout implements View.OnClickListener
         initView();
         initClick();
         postInvalidate();
-    }
-
-    @Override
-    public void onViewRemoved(View child) {
-        super.onViewRemoved(child);
-        mOnExpandListener = null;
-        if (handler != null) {
-            handler.removeCallbacks(null);
-        }
-    }
-
-    @Override
-    public void onClick(View v) {
-        if (v.getId() == R.id.rl_expand_text_view_animation_toggle_layout || v == this.textView) {
-            clickToggle();
-        }
     }
 
 
@@ -181,8 +184,18 @@ public class ReadMoreLayout extends LinearLayout implements View.OnClickListener
     }
 
     private void initClick() {
-        textView.setOnClickListener(this);
-        rlToggleLayout.setOnClickListener(this);
+        textView.setOnClickListener(new OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                clickToggle();
+            }
+        });
+        rlToggleLayout.setOnClickListener(new OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                clickToggle();
+            }
+        });
     }
 
 
@@ -245,7 +258,12 @@ public class ReadMoreLayout extends LinearLayout implements View.OnClickListener
             isShrink = true;
             rlToggleLayout.setVisibility(View.VISIBLE);
             ivExpandOrShrink.setImageDrawable(drawableExpand);
-            textView.setOnClickListener(this);
+            textView.setOnClickListener(new OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    clickToggle();
+                }
+            });
             tvState.setText(textExpand);
         } else {
             isShrink = false;
