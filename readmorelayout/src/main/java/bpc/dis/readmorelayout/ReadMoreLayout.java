@@ -23,6 +23,7 @@ public class ReadMoreLayout extends LinearLayout {
     public final int WHAT_ANIMATION_END = 3;
     public final int WHAT_EXPAND_ONLY = 4;
     public TextView textView;
+    private ReadMoreLayoutHandler handler = new ReadMoreLayoutHandler(this);
     private TextView tvState;
     private ImageView ivExpandOrShrink;
     private RelativeLayout rlToggleLayout;
@@ -71,10 +72,6 @@ public class ReadMoreLayout extends LinearLayout {
         this.initValue(attrs);
     }
 
-    public ReadMoreLayoutHandler getHandler() {
-        return new ReadMoreLayoutHandler(this);
-    }
-
     @Override
     protected void onDetachedFromWindow() {
         super.onDetachedFromWindow();
@@ -82,8 +79,7 @@ public class ReadMoreLayout extends LinearLayout {
         textView.setOnClickListener(null);
         rlToggleLayout.setOnClickListener(null);
         textView.addTextChangedListener(null);
-        mOnExpandListener = null;
-        onPreDrawListener = null;
+        textView.getViewTreeObserver().removeOnPreDrawListener(onPreDrawListener);
     }
 
     @Override
@@ -93,8 +89,7 @@ public class ReadMoreLayout extends LinearLayout {
         textView.setOnClickListener(null);
         rlToggleLayout.setOnClickListener(null);
         textView.addTextChangedListener(null);
-        mOnExpandListener = null;
-        onPreDrawListener = null;
+        textView.getViewTreeObserver().removeOnPreDrawListener(onPreDrawListener);
     }
 
     @Override
@@ -182,12 +177,10 @@ public class ReadMoreLayout extends LinearLayout {
     }
 
     private void doAnimation(final int startIndex, final int endIndex, final int what) {
-
         Thread thread = new Thread(new Runnable() {
 
             @Override
             public void run() {
-                ReadMoreLayoutHandler handler = getHandler();
                 isAnim = true;
                 if (startIndex < endIndex) {
                     int count = startIndex;
