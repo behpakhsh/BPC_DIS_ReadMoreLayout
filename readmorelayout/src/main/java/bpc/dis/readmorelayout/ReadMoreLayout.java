@@ -56,9 +56,8 @@ public class ReadMoreLayout extends LinearLayout {
     protected void onDetachedFromWindow() {
         super.onDetachedFromWindow();
         textView.setOnClickListener(null);
-        textView.setOnClickListener(null);
         rlToggleLayout.setOnClickListener(null);
-        textView.addTextChangedListener(null);
+//        textView.addTextChangedListener(null);
 //        textView.getViewTreeObserver().removeOnPreDrawListener(onPreDrawListener);
     }
 
@@ -66,9 +65,8 @@ public class ReadMoreLayout extends LinearLayout {
     public void onViewRemoved(View child) {
         super.onViewRemoved(child);
         textView.setOnClickListener(null);
-        textView.setOnClickListener(null);
         rlToggleLayout.setOnClickListener(null);
-        textView.addTextChangedListener(null);
+//        textView.addTextChangedListener(null);
 //        textView.getViewTreeObserver().removeOnPreDrawListener(onPreDrawListener);
     }
 
