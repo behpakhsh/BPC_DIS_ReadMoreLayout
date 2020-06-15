@@ -38,7 +38,6 @@ public class ReadMoreLayout extends LinearLayout {
     private int sleepTime = 22;
     private boolean isAnim = false;
     private OnExpandListener mOnExpandListener;
-    private boolean canAddTvPreDrawListener = true;
 
     public ReadMoreLayout(Context context) {
         this(context, null);
@@ -261,10 +260,7 @@ public class ReadMoreLayout extends LinearLayout {
 
             @Override
             public void afterTextChanged(Editable s) {
-                if (canAddTvPreDrawListener) {
-                    canAddTvPreDrawListener = false;
-                    addTvPreDrawListener();
-                }
+                addTvPreDrawListener();
             }
         };
     }
