@@ -9,7 +9,6 @@ import android.text.TextUtils;
 import android.text.TextWatcher;
 import android.util.AttributeSet;
 import android.view.View;
-import android.view.ViewTreeObserver;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
@@ -23,6 +22,10 @@ public class ReadMoreLayout extends LinearLayout {
     public final int WHAT_ANIMATION_END = 3;
     public final int WHAT_EXPAND_ONLY = 4;
     public TextView textView;
+    public boolean isShrink = false;
+    public boolean isInitTextView = true;
+    public int expandLines;
+    public int textLines;
     private ReadMoreLayoutHandler handler = new ReadMoreLayoutHandler(this);
     private TextView tvState;
     private ImageView ivExpandOrShrink;
@@ -32,32 +35,10 @@ public class ReadMoreLayout extends LinearLayout {
     private int textViewStateColor;
     private String textExpand;
     private String textShrink;
-    private boolean isShrink = false;
-    private boolean isInitTextView = true;
-    private int expandLines;
-    private int textLines;
     private int sleepTime = 22;
     private boolean isAnim = false;
     private OnExpandListener mOnExpandListener;
-    private ViewTreeObserver.OnPreDrawListener onPreDrawListener = new ViewTreeObserver.OnPreDrawListener() {
-        @Override
-        public boolean onPreDraw() {
-            if (!isInitTextView) {
-                return true;
-            }
-            textLines = textView.getLineCount();
-            boolean isExpandNeeded = textLines > expandLines;
-            isInitTextView = false;
-            if (isExpandNeeded) {
-                isShrink = true;
-                doAnimation(textLines, expandLines, WHAT_ANIMATION_END);
-            } else {
-                isShrink = false;
-                doNotExpand();
-            }
-            return true;
-        }
-    };
+    private boolean canAddTvPreDrawListener = true;
 
     public ReadMoreLayout(Context context) {
         this(context, null);
@@ -79,7 +60,7 @@ public class ReadMoreLayout extends LinearLayout {
         textView.setOnClickListener(null);
         rlToggleLayout.setOnClickListener(null);
         textView.addTextChangedListener(null);
-        textView.getViewTreeObserver().removeOnPreDrawListener(onPreDrawListener);
+//        textView.getViewTreeObserver().removeOnPreDrawListener(onPreDrawListener);
     }
 
     @Override
@@ -89,7 +70,7 @@ public class ReadMoreLayout extends LinearLayout {
         textView.setOnClickListener(null);
         rlToggleLayout.setOnClickListener(null);
         textView.addTextChangedListener(null);
-        textView.getViewTreeObserver().removeOnPreDrawListener(onPreDrawListener);
+//        textView.getViewTreeObserver().removeOnPreDrawListener(onPreDrawListener);
     }
 
     @Override
@@ -170,13 +151,11 @@ public class ReadMoreLayout extends LinearLayout {
         });
     }
 
-
     private void addTvPreDrawListener() {
-        ViewTreeObserver viewTreeObserver = textView.getViewTreeObserver();
-        viewTreeObserver.addOnPreDrawListener(onPreDrawListener);
+        textView.getViewTreeObserver().addOnPreDrawListener(new ReadMoreLayoutOnPreDrawListener(this));
     }
 
-    private void doAnimation(final int startIndex, final int endIndex, final int what) {
+    public void doAnimation(final int startIndex, final int endIndex, final int what) {
         Thread thread = new Thread(new Runnable() {
 
             @Override
@@ -264,7 +243,7 @@ public class ReadMoreLayout extends LinearLayout {
         isShrink = !isShrink;
     }
 
-    private void doNotExpand() {
+    public void doNotExpand() {
         textView.setMaxLines(expandLines);
         rlToggleLayout.setVisibility(View.GONE);
         textView.setOnClickListener(null);
@@ -282,7 +261,10 @@ public class ReadMoreLayout extends LinearLayout {
 
             @Override
             public void afterTextChanged(Editable s) {
-                addTvPreDrawListener();
+                if (canAddTvPreDrawListener) {
+                    canAddTvPreDrawListener = false;
+                    addTvPreDrawListener();
+                }
             }
         };
     }
