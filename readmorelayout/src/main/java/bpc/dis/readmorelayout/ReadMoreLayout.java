@@ -1,10 +1,8 @@
 package bpc.dis.readmorelayout;
 
-import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.res.TypedArray;
 import android.graphics.drawable.Drawable;
-import android.os.Handler;
 import android.os.Message;
 import android.text.Editable;
 import android.text.TextUtils;
@@ -21,10 +19,10 @@ import androidx.core.content.ContextCompat;
 
 public class ReadMoreLayout extends LinearLayout {
 
-    private final int WHAT = 2;
-    private final int WHAT_ANIMATION_END = 3;
-    private final int WHAT_EXPAND_ONLY = 4;
-    private TextView textView;
+    public final int WHAT = 2;
+    public final int WHAT_ANIMATION_END = 3;
+    public final int WHAT_EXPAND_ONLY = 4;
+    public TextView textView;
     private TextView tvState;
     private ImageView ivExpandOrShrink;
     private RelativeLayout rlToggleLayout;
@@ -40,25 +38,6 @@ public class ReadMoreLayout extends LinearLayout {
     private int sleepTime = 22;
     private boolean isAnim = false;
     private OnExpandListener mOnExpandListener;
-
-    @SuppressLint("HandlerLeak")
-    private Handler handler = new Handler() {
-
-        @Override
-        public void handleMessage(Message msg) {
-            if (WHAT == msg.what) {
-                textView.setMaxLines(msg.arg1);
-                textView.invalidate();
-            } else if (WHAT_ANIMATION_END == msg.what) {
-                setExpandState(msg.arg1);
-            } else if (WHAT_EXPAND_ONLY == msg.what) {
-                changeExpandState(msg.arg1);
-            }
-            super.handleMessage(msg);
-        }
-
-    };
-
     private ViewTreeObserver.OnPreDrawListener onPreDrawListener = new ViewTreeObserver.OnPreDrawListener() {
         @Override
         public boolean onPreDraw() {
@@ -92,6 +71,10 @@ public class ReadMoreLayout extends LinearLayout {
         this.initValue(attrs);
     }
 
+    public ReadMoreLayoutHandler getHandler() {
+        return new ReadMoreLayoutHandler(this);
+    }
+
     @Override
     protected void onDetachedFromWindow() {
         super.onDetachedFromWindow();
@@ -101,9 +84,6 @@ public class ReadMoreLayout extends LinearLayout {
         textView.addTextChangedListener(null);
         mOnExpandListener = null;
         onPreDrawListener = null;
-        if (handler != null) {
-            handler.removeCallbacks(null);
-        }
     }
 
     @Override
@@ -115,9 +95,6 @@ public class ReadMoreLayout extends LinearLayout {
         textView.addTextChangedListener(null);
         mOnExpandListener = null;
         onPreDrawListener = null;
-        if (handler != null) {
-            handler.removeCallbacks(null);
-        }
     }
 
     @Override
@@ -210,6 +187,7 @@ public class ReadMoreLayout extends LinearLayout {
 
             @Override
             public void run() {
+                ReadMoreLayoutHandler handler = getHandler();
                 isAnim = true;
                 if (startIndex < endIndex) {
                     int count = startIndex;
@@ -242,7 +220,7 @@ public class ReadMoreLayout extends LinearLayout {
         thread.start();
     }
 
-    private void changeExpandState(int endIndex) {
+    public void changeExpandState(int endIndex) {
         rlToggleLayout.setVisibility(View.VISIBLE);
         if (endIndex < textLines) {
             ivExpandOrShrink.setImageDrawable(drawableExpand);
@@ -253,7 +231,7 @@ public class ReadMoreLayout extends LinearLayout {
         }
     }
 
-    private void setExpandState(int endIndex) {
+    public void setExpandState(int endIndex) {
         if (endIndex < textLines) {
             isShrink = true;
             rlToggleLayout.setVisibility(View.VISIBLE);
